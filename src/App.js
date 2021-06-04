@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactMapGL, {Marker, Popup} from 'react-map-gl';
 import data from './data/chicago-parks.json';
 
@@ -11,6 +11,19 @@ function App() {
     zoom: 10
   })
   const [selectedPark, setSelectedPark] = useState(null)
+
+  useEffect(() => {
+    const listener = (e) => {
+      if (e.key === "Escape") {
+        setSelectedPark(null)
+      }
+    }
+    window.addEventListener("keydown", listener)
+
+    return () => {
+      window.removeEventListener("keydown", listener)
+    }
+  }, [])
 
   const handleClick = (e, park) => {
     e.preventDefault()
