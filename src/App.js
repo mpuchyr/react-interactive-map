@@ -17,14 +17,19 @@ function App() {
     setSelectedPark(park)
   }
 
+  const handleClose = () => {
+    setSelectedPark(null)
+  }
+
   const displayMarkers = () => {
-    return data.map((park) => {
+    return data.map((park, index) => {
       // Prevents error caused by a 'park' not having proper location data
       if (park.location.hasOwnProperty('latitude') && park.location.hasOwnProperty('longitude')) {
         const lat = parseFloat(park.location.latitude)
         const lon = parseFloat(park.location.longitude)
         return (
           <Marker 
+            key={index}
             latitude={lat}
             longitude={lon}
           >
@@ -56,6 +61,7 @@ function App() {
             <Popup
               latitude={parseFloat(selectedPark.location.latitude)}
               longitude={parseFloat(selectedPark.location.longitude)}
+              onClose={handleClose}
             >
               <div>
                 <h2>{selectedPark.park}</h2>
