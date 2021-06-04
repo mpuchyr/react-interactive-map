@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ReactMapGL, {Marker} from 'react-map-gl';
+import ReactMapGL, {Marker, Popup} from 'react-map-gl';
 import data from './data/chicago-parks.json';
 
 function App() {
@@ -10,9 +10,16 @@ function App() {
     height: '100vh',
     zoom: 10
   })
+  const [selectedPark, setSelectedPark] = useState(null)
+
+  const handleClick = (e, park) => {
+    e.preventDefault()
+    setSelectedPark(park)
+  }
 
   const displayMarkers = () => {
     return data.map((park) => {
+      // Prevents error caused by a 'park' not having proper location data
       if (park.location.hasOwnProperty('latitude') && park.location.hasOwnProperty('longitude')) {
         const lat = parseFloat(park.location.latitude)
         const lon = parseFloat(park.location.longitude)
@@ -21,7 +28,7 @@ function App() {
             latitude={lat}
             longitude={lon}
           >
-            Park
+            <button onClick={(e) => handleClick(e, park)}>Park</button>
           </Marker>
         )
       } else {
@@ -45,6 +52,17 @@ function App() {
           }}
         >
           {displayMarkers()}
+          {selectedPark && (
+            <Popup
+              latitude={parseFloat(selectedPark.location.latitude)}
+              longitude={parseFloat(selectedPark.location.longitude)}
+            >
+              <div>
+                <h2>{selectedPark.park}</h2>
+                <p>{selectedPark.park_address}</p>
+              </div>
+            </Popup>
+          )}
         </ReactMapGL>
     </div>
   );
